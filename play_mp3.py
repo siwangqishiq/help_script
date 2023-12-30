@@ -1,6 +1,7 @@
 
 # from playsound import soundplayer
 
+# import test as t
 
 filepath = "E:\\assets\\audio\\少妇白洁\\少妇白洁011.mp3"
 # print(f"播放文件: {filepath}")
@@ -12,6 +13,8 @@ content = text_file.read(4)
 text_file.close()
 
 print(content)
+
+# t.test2()
 
 
 
