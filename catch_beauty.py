@@ -4,11 +4,11 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import os;
 
-FETCH_URL = "https://www.tuiimg.com/meinv/3069/"
+FETCH_URL = "https://www.tuiimg.com/meinv/3097/"
 # DIR = "3057"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
-DIR_NAME = FETCH_URL.split("/")[-2]
+DIR_NAME = ""
 
 def fetch_pics(url):
     print(f"抓取 {url}")
@@ -19,7 +19,8 @@ def fetch_pics(url):
         print(f"catch error {url}")
         return
     
-    # DIR_NAME = url.split("/")[-2]
+    global DIR_NAME
+    DIR_NAME = url.split("/")[-2]
     print(f"DIR_NAME: {DIR_NAME}")
 
     soup = BeautifulSoup(resp.text , "html.parser")
