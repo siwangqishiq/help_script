@@ -1,4 +1,5 @@
 import json
+from turtle import title
 import requests
 from bs4 import BeautifulSoup
 import os
@@ -13,8 +14,7 @@ class ChildPage:
         self.thumb = thumb
         self.tags: list[str] = []
         self.images: list[str] = []
-        self.DIR_NAME = "none"
-
+        self.DIR_NAME = None
     def fetch(self):
         print(f"fetch {self.url}")
         resp = requests.get(self.url, headers={
@@ -58,13 +58,28 @@ class ChildPage:
         for index in range(total_image_count):
             img_url = fileurl + str(index + 1) + ".jpg"
             self.images.append(img_url)
-            print(img_url + " progress(%d/%d)" % (index, total_image_count))
-            self.download_pic(img_url, "img_" + str(index + 1) + ".jpg")
+            # print(img_url + " progress(%d/%d)" % (index, total_image_count))
+            # self.download_pic(img_url, "img_" + str(index + 1) + ".jpg")
+
+        #find tags
+        tag_info = soup.find("div", attrs={"class": "info"})
+        tags = tag_info.find_all("a")
+        for a_tag in tags:
+            self.tags.append(a_tag.text)
 
         print(self)
-
+    
     def __str__(self):
-        return f"{self.title}, {self.url} , {self.tags} ,{self.images}"
+        return str(self.toMap())
+
+    def toMap(self):
+        jsonObjMap = {}
+        jsonObjMap['title'] = self.title
+        jsonObjMap['url'] = self.url
+        jsonObjMap['images'] = self.images
+        jsonObjMap['thumb'] = self.thumb
+        jsonObjMap['tags'] = self.tags
+        return jsonObjMap
 
     def download_pic(self, resUrl, filename):
         print(f"download {resUrl}")
@@ -83,12 +98,14 @@ class Spider:
     def __init__(self, url):
         self.URL = url
         self.page_list = []
+        self.info_list = []
 
     def fetch(self):
         self.page_list = self.fetch_root_page()
         print(f"this have {len(self.page_list)} pages")
         for page in self.page_list:
             page.fetch()
+            self.info_list.append(page.toMap())
 
     def fetch_root_page(self):
         child_page_list = []
@@ -115,15 +132,55 @@ class Spider:
             url = a_tag['href']
             img_tag = a_tag.find("img")
             print(url + " " + title + " " + img_tag['src'])
-            child_page = ChildPage(url, title, img_tag)
+            child_page = ChildPage(url, title, img_tag['src'])
             child_page_list.append(child_page)
-
 
 # def fetch():
 #     spider = Spider("https://www.tuiimg.com/meinv/list_155.html")
 #     spider.fetch()
 
+def find_page_count():
+    url = "https://www.tuiimg.com/meinv/"
+    resp = requests.get(url, headers={
+        'User-Agent': UA
+    })
+
+    if resp.status_code != 200:
+        print(f"catch error {url}")
+        return
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    page_info = soup.find("div" , attrs={"class": "page"})
+    a_tags = page_info.find_all("a")
+    print(a_tags[-1].text)
+
+    return int(a_tags[-1].text)
 
 if __name__ == "__main__":
-    spider = Spider("https://www.tuiimg.com/meinv/list_155.html")
-    spider.fetch()
+    pages = []
+
+    total_page = find_page_count()
+    print("total_page = " + str(total_page))
+
+    total_page = 10
+    for index in range(1 , total_page + 1):
+        pages.append(f"https://www.tuiimg.com/meinv/list_{index}.html")
+    
+    print(pages)
+    
+    info_list = []
+    for page_url in pages:
+        spider = Spider(page_url)
+        spider.fetch()
+        info_list.extend(spider.info_list)
+    
+    #print(info_list)
+
+    with open("json.txt" , "w" , encoding="utf-8") as f:
+        f.write(str(info_list))
+    
+    print("写入完成")
+
+    
+    # spider = Spider("https://www.tuiimg.com/meinv/list_155.html")
+    # spider.fetch()
