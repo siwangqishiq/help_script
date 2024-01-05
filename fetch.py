@@ -58,8 +58,8 @@ class ChildPage:
         for index in range(total_image_count):
             img_url = fileurl + str(index + 1) + ".jpg"
             self.images.append(img_url)
-            # print(img_url + " progress(%d/%d)" % (index, total_image_count))
-            # self.download_pic(img_url, "img_" + str(index + 1) + ".jpg")
+            print(img_url + " progress(%d/%d)" % (index, total_image_count))
+            self.download_pic(img_url, "img_" + str(index + 1) + ".jpg")
 
         #find tags
         tag_info = soup.find("div", attrs={"class": "info"})
@@ -156,13 +156,13 @@ def find_page_count():
 
     return int(a_tags[-1].text)
 
-if __name__ == "__main__":
+def catch_all():
     pages = []
 
     total_page = find_page_count()
     print("total_page = " + str(total_page))
-
-    total_page = 10
+    
+    # total_page = 10
     for index in range(1 , total_page + 1):
         pages.append(f"https://www.tuiimg.com/meinv/list_{index}.html")
     
@@ -181,6 +181,10 @@ if __name__ == "__main__":
     
     print("写入完成")
 
+if __name__ == "__main__":
+    page_url = "https://www.tuiimg.com/meinv/"
+    spider = Spider(page_url)
+    spider.fetch()
     
     # spider = Spider("https://www.tuiimg.com/meinv/list_155.html")
     # spider.fetch()
