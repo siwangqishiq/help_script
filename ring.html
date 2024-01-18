@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Distorted Smooth Circular Path</title>
+    <style>
+        canvas {
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="400" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.strokeStyle = "black";
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radiusNormal = 100;
+        var time = 0.0;
+
+
+        function drawCircleNormal() {
+            var A = 0;
+            var n = 10;
+
+            ctx.save();
+            ctx.strokeStyle = "blue";
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            // ctx.moveTo(centerX + radius, centerY);
+
+            for (let i = 0; i <= 360; i++) {
+                let angle = (i * Math.PI) / 180;
+                let x = centerX + (radiusNormal + A * Math.cos(n * angle)) * Math.cos(angle);
+                let y = centerY + (radiusNormal + A * Math.cos(n * angle)) * Math.sin(angle);
+                ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawDistoredCircle() {
+            var radius = radiusNormal * 1.0;
+            var A = radius * 0.15 * Math.sin(time);
+            var n = 3;
+
+            ctx.save();
+            ctx.lineWidth = 4;
+
+            ctx.translate(centerX, centerY);
+            var angle = (Math.PI / 180) * time * 20;
+            ctx.rotate(angle);
+            ctx.beginPath();
+
+            for (let i = 0; i <= 360; i++) {
+                let angle = (i * Math.PI) / 180;
+                let x = (radius + A * Math.cos(n * angle)) * Math.cos(angle);
+                let y = (radius + A * Math.cos(n * angle)) * Math.sin(angle);
+                ctx.lineTo(x, y);
+            }
+
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawDistoredCircle2() {
+            var radius = radiusNormal * 1.0;
+            var A = radius * 0.15 * Math.sin(time);
+            var n = 3;
+
+            ctx.save();
+            ctx.lineWidth = 4;
+
+            ctx.translate(centerX, centerY);
+            var angle = (Math.PI / 180) * time * 20;
+            ctx.rotate(angle + (Math.PI / 180) * 10);
+            ctx.beginPath();
+
+            for (let i = 0; i <= 360; i++) {
+                let angle = (i * Math.PI) / 180;
+                let x = (radius + A * Math.cos(n * angle)) * Math.cos(angle);
+                let y = (radius + A * Math.cos(n * angle)) * Math.sin(angle);
+                ctx.lineTo(x, y);
+            }
+
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawDistoredCircle3() {
+            var radius = radiusNormal * 1.0;
+            var A = radius * 0.15 * Math.sin(time);
+            var n = 3;
+
+            ctx.save();
+            ctx.lineWidth = 4;
+
+            ctx.translate(centerX, centerY);
+            var angle = (Math.PI / 180) * time * 20;
+            ctx.rotate(angle + (Math.PI / 180) * 20);
+            ctx.beginPath();
+
+            for (let i = 0; i <= 360; i++) {
+                let angle = (i * Math.PI) / 180;
+                let x = (radius + A * Math.cos(n * angle)) * Math.cos(angle);
+                let y = (radius + A * Math.cos(n * angle)) * Math.sin(angle);
+                ctx.lineTo(x, y);
+            }
+
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // for (var i = 0; i < 1; i++) {
+            //     drawDistoredCircle();
+            //     //angleRotate += Math.PI / 360;
+            // }
+            drawDistoredCircle();
+            drawDistoredCircle2();
+            drawDistoredCircle3();
+            // drawCircleNormal();
+
+            // startAngle += 0.01;
+            time += 0.005;
+        }
+
+        // render();
+        setInterval(render, 15);
+    </script>
+</body>
+
+</html>
